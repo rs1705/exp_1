@@ -9,12 +9,27 @@ exports.getProducts = (req, res, next) => {
     });
   });
 };
+exports.getProduct = (req, res, next) => {
+  const prodId = req.params.productId;
+  Product.fetchById(prodId, (product) => {
+    res.render("shop/product-detail", {
+      product: product,
+      path: "/products",
+      pageTitle: product.title,
+    });
+  });
+};
 
 exports.getCart = (req, res, next) => {
   res.render("shop/cart", {
     pageTitle: "Your cart",
     path: "/cart",
   });
+};
+
+exports.postCart = (req, res, next) => {
+  const prodId = req.body.productId;
+  console.log(prodId);
 };
 
 exports.getOrders = (req, res, next) => {
