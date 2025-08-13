@@ -15,8 +15,10 @@
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-handlebars": "^8.0.3",
+    "mysql2": "^3.14.3",
     "nodemon": "^3.1.10",
     "pug": "^3.0.3",
+    "sequelize": "^6.37.7",
     "tailwindcss": "^4.1.11"
   }
 }
