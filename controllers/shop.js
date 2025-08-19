@@ -1,7 +1,7 @@
 const Product = require("../models/product");
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  Product.fetchAll()
     .then((data) => {
       res.render("shop/product-list", {
         products: data,
@@ -13,7 +13,7 @@ exports.getProducts = (req, res, next) => {
 };
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
-  Product.findOne({ where: { id: prodId } })
+  Product.fetchById(prodId)
     .then((p) => {
       res.render("shop/product-detail", {
         product: p,
@@ -111,7 +111,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
 
 exports.getOrders = (req, res, next) => {
   req.user
-    .getOrders({include:["products"]})
+    .getOrders({ include: ["products"] })
     .then((orders) => {
       console.log(orders);
       res.render("shop/orders", {
@@ -131,9 +131,11 @@ exports.postOrder = (req, res, next) => {
       return cart.getProducts();
     })
     .then((products) => {
+      let orderRef;
       return req.user
         .createOrder()
         .then((order) => {
+          orderRef = order;
           return order.addProducts(
             products.map((product) => {
               product.orderItem = { quantity: product.cartItem.quantity };
@@ -141,10 +143,9 @@ exports.postOrder = (req, res, next) => {
             })
           );
         })
-        .catch((e) => console.log(e));
-    })
-    .then((result) => {
-      return fetchedCart.setProducts(null);
+        .then(() => {
+          return fetchedCart.setProducts(null);
+        });
     })
     .then(() => {
       res.redirect("/orders");
@@ -152,7 +153,7 @@ exports.postOrder = (req, res, next) => {
     .catch((e) => console.log(e));
 };
 exports.getIndex = (req, res, next) => {
-  Product.findAll()
+  Product.fetchAll()
     .then((data) => {
       res.render("shop/index", {
         products: data,
